@@ -1,17 +1,21 @@
-import { Text, View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 
 
 export default function App() {
   const [task, setTask] = useState('');
-  const [tasks, setTasks] = useState('');
+  const [tasks, setTasks] = useState([]);
 
   const addTask = () => {
     if (task.trim().length > 0) {
       setTasks([...tasks, { id: Math.random().toString(), value: task }]);
       setTask("");
     }
+  };
+
+  const removeTask = (taskId) => {
+    setTasks(tasks.filter((task) => task.id !== taskId));
   };
 
   return (
@@ -37,6 +41,23 @@ export default function App() {
           <Text style={styles.filledList}>Tarefas Cadastradas</Text>
         )}
       </View>
+
+      <ScrollView style={styles.scrollList} showsVerticalScrollIndicator={false}>
+        {tasks.map((task) => (
+          <View
+            key={task.id}
+            style={styles.listItem}
+          >
+            <Text style={styles.widthText}>{task.value}</Text>
+            <TouchableOpacity
+              onPress={() => removeTask(task.id)}
+              style={styles. removeButton}
+            >
+              <Text style={styles.buttonText}>Remover</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
       <StatusBar style="auto" />
     </View>
   );
@@ -88,4 +109,31 @@ const styles = StyleSheet.create({
     color: "green",
     fontSize: 20
   },
+
+  scrollList: {
+    marginBottom: 24,
+  },
+
+  listItem: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "black",
+    paddingBottom: 5,
+  },
+
+  widthText: {
+    width: "75%",
+  },
+
+  removeButton: {
+    backgroundColor: "red",
+    borderRadius: 5,
+    padding: 10,
+  },
+
+
 });
